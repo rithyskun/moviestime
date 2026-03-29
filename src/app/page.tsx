@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import SearchBar from '@/components/SearchBar';
-import TorrentCard from '@/components/TorrentCard';
-import MovieCard from '@/components/MovieCard';
+import { useState } from "react";
+import SearchBar from "@/components/SearchBar";
+import TorrentCard from "@/components/TorrentCard";
+import MovieCard from "@/components/MovieCard";
 
 interface Torrent {
   _id: string;
@@ -31,26 +31,32 @@ export default function Home() {
   const [torrents, setTorrents] = useState<Torrent[]>([]);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchType, setSearchType] = useState<'torrents' | 'movies'>('torrents');
+  const [searchType, setSearchType] = useState<"torrents" | "movies">(
+    "torrents",
+  );
 
   const handleSearch = async (query: string) => {
     setIsLoading(true);
     try {
-      if (searchType === 'torrents') {
-        const response = await fetch(`/api/torrents?q=${encodeURIComponent(query)}`);
+      if (searchType === "torrents") {
+        const response = await fetch(
+          `/api/torrents?q=${encodeURIComponent(query)}`,
+        );
         const data = await response.json();
         if (data.success) {
           setTorrents(data.data);
         }
       } else {
-        const response = await fetch(`/api/movies?q=${encodeURIComponent(query)}`);
+        const response = await fetch(
+          `/api/movies?q=${encodeURIComponent(query)}`,
+        );
         const data = await response.json();
         if (data.success) {
           setMovies(data.data);
         }
       }
     } catch (error) {
-      console.error('Search failed:', error);
+      console.error("Search failed:", error);
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +68,9 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-gradient-to-b from-black to-transparent border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <h1 className="text-4xl font-bold text-red-600 mb-2">MoviesTime</h1>
-          <p className="text-gray-400">Stream movies and TV shows from torrent sources</p>
+          <p className="text-gray-400">
+            Stream movies and TV shows from torrent sources
+          </p>
         </div>
       </header>
 
@@ -70,21 +78,21 @@ export default function Home() {
       <nav className="bg-gray-900 border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-4 flex gap-4">
           <button
-            onClick={() => setSearchType('torrents')}
+            onClick={() => setSearchType("torrents")}
             className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-              searchType === 'torrents'
-                ? 'bg-red-600 text-white'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+              searchType === "torrents"
+                ? "bg-red-600 text-white"
+                : "bg-gray-800 text-gray-300 hover:bg-gray-700"
             }`}
           >
             Torrents
           </button>
           <button
-            onClick={() => setSearchType('movies')}
+            onClick={() => setSearchType("movies")}
             className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-              searchType === 'movies'
-                ? 'bg-red-600 text-white'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+              searchType === "movies"
+                ? "bg-red-600 text-white"
+                : "bg-gray-800 text-gray-300 hover:bg-gray-700"
             }`}
           >
             Movies
@@ -108,10 +116,10 @@ export default function Home() {
           </div>
         )}
 
-        {searchType === 'torrents' && !isLoading && (
+        {searchType === "torrents" && !isLoading && (
           <>
             <h2 className="text-2xl font-bold text-white mb-6">
-              {torrents.length > 0 ? 'Search Results' : 'Popular Torrents'}
+              {torrents.length > 0 ? "Search Results" : "Popular Torrents"}
             </h2>
 
             {torrents.length > 0 ? (
@@ -133,16 +141,18 @@ export default function Home() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-gray-400">No torrents found. Try searching for a movie or show.</p>
+                <p className="text-gray-400">
+                  No torrents found. Try searching for a movie or show.
+                </p>
               </div>
             )}
           </>
         )}
 
-        {searchType === 'movies' && !isLoading && (
+        {searchType === "movies" && !isLoading && (
           <>
             <h2 className="text-2xl font-bold text-white mb-6">
-              {movies.length > 0 ? 'Search Results' : 'Featured Movies'}
+              {movies.length > 0 ? "Search Results" : "Featured Movies"}
             </h2>
 
             {movies.length > 0 ? (
@@ -162,7 +172,9 @@ export default function Home() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-gray-400">No movies found. Try searching for a title.</p>
+                <p className="text-gray-400">
+                  No movies found. Try searching for a title.
+                </p>
               </div>
             )}
           </>
@@ -170,9 +182,11 @@ export default function Home() {
       </div>
 
       {/* Popular Torrents Section */}
-      {!isLoading && torrents.length === 0 && searchType === 'torrents' && (
+      {!isLoading && torrents.length === 0 && searchType === "torrents" && (
         <div className="max-w-7xl mx-auto px-6 py-12 border-t border-gray-800">
-          <h2 className="text-2xl font-bold text-white mb-6">Popular Streaming Sources</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">
+            Popular Streaming Sources
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="p-6 bg-gray-900 rounded-lg border border-gray-800">
               <h3 className="text-white font-bold mb-3">🔗 Torrent Sites</h3>
@@ -186,7 +200,8 @@ export default function Home() {
             <div className="p-6 bg-gray-900 rounded-lg border border-gray-800">
               <h3 className="text-white font-bold mb-3">📺 How to Search</h3>
               <p className="text-gray-400 text-sm">
-                Use the search bar above to find torrents and movies. Connect to a torrent site URL to fetch live data.
+                Use the search bar above to find torrents and movies. Connect to
+                a torrent site URL to fetch live data.
               </p>
             </div>
           </div>

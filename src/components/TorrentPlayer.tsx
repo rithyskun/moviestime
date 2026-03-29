@@ -1,13 +1,16 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
 interface TorrentPlayerProps {
   magnetLink: string;
   fileName?: string;
 }
 
-export default function TorrentPlayer({ magnetLink, fileName }: TorrentPlayerProps) {
+export default function TorrentPlayer({
+  magnetLink,
+  fileName,
+}: TorrentPlayerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [torrentInfo, setTorrentInfo] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -17,13 +20,13 @@ export default function TorrentPlayer({ magnetLink, fileName }: TorrentPlayerPro
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/stream/load', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/stream/load", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ magnetLink }),
       });
 
-      if (!response.ok) throw new Error('Failed to load torrent');
+      if (!response.ok) throw new Error("Failed to load torrent");
 
       const data = await response.json();
       if (data.success) {
@@ -44,7 +47,9 @@ export default function TorrentPlayer({ magnetLink, fileName }: TorrentPlayerPro
         <h2 className="text-white text-2xl font-bold mb-4">Torrent Player</h2>
 
         <div className="mb-4 p-4 bg-gray-800 rounded">
-          <p className="text-gray-300 text-sm break-all">Magnet: {magnetLink}</p>
+          <p className="text-gray-300 text-sm break-all">
+            Magnet: {magnetLink}
+          </p>
         </div>
 
         <button
@@ -52,7 +57,7 @@ export default function TorrentPlayer({ magnetLink, fileName }: TorrentPlayerPro
           disabled={isLoading}
           className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold disabled:opacity-50"
         >
-          {isLoading ? 'Loading...' : 'Load Torrent'}
+          {isLoading ? "Loading..." : "Load Torrent"}
         </button>
 
         {error && <p className="text-red-500 mt-4">{error}</p>}
@@ -60,7 +65,9 @@ export default function TorrentPlayer({ magnetLink, fileName }: TorrentPlayerPro
 
       {torrentInfo && (
         <div className="bg-gray-800 p-6 rounded-lg">
-          <h3 className="text-white text-xl font-bold mb-4">{torrentInfo.name}</h3>
+          <h3 className="text-white text-xl font-bold mb-4">
+            {torrentInfo.name}
+          </h3>
 
           <div className="grid grid-cols-2 gap-4 mb-6 text-gray-300 text-sm">
             <div>
@@ -90,7 +97,9 @@ export default function TorrentPlayer({ magnetLink, fileName }: TorrentPlayerPro
                     key={file.index}
                     className="p-3 bg-gray-700 rounded hover:bg-gray-600 cursor-pointer"
                   >
-                    <p className="text-gray-300 text-sm break-all">{file.name}</p>
+                    <p className="text-gray-300 text-sm break-all">
+                      {file.name}
+                    </p>
                     <p className="text-gray-400 text-xs">
                       {(file.length / 1024 / 1024).toFixed(2)} MB
                     </p>

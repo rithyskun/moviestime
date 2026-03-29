@@ -1,14 +1,17 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
   placeholder?: string;
 }
 
-export default function SearchBar({ onSearch, placeholder = 'Search movies and torrents...' }: SearchBarProps) {
-  const [query, setQuery] = useState('');
+export default function SearchBar({
+  onSearch,
+  placeholder = "Search movies and torrents...",
+}: SearchBarProps) {
+  const [query, setQuery] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -30,12 +30,14 @@ A modern web application for streaming movies and TV shows from torrent sources 
 ## Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd moviestime
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
@@ -46,16 +48,18 @@ A modern web application for streaming movies and TV shows from torrent sources 
 
 4. **Configure environment variables**
    Create `.env.local` in the root directory:
+
    ```env
    MONGODB_URI=mongodb://localhost:27017/moviestime
    # OR for MongoDB Atlas:
    # MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/moviestime?retryWrites=true&w=majority
-   
+
    TORRENT_API_URL=https://api.thepiratebay.org
    PUBLIC_URL=http://localhost:3000
    ```
 
 5. **Run the development server**
+
    ```bash
    npm run dev
    ```
@@ -93,7 +97,6 @@ A modern web application for streaming movies and TV shows from torrent sources 
 
 - **GET** `/api/torrents` - Search torrents
   - Query params: `q` (search query), `page`, `limit`
-  
 - **POST** `/api/torrents/add` - Add new torrent
   - Body: `{ name, hash, magnetLink, seeders, leechers, size, category }`
 
@@ -101,7 +104,6 @@ A modern web application for streaming movies and TV shows from torrent sources 
 
 - **GET** `/api/movies` - Search movies
   - Query params: `q` (search query), `page`, `limit`, `genre`
-  
 - **POST** `/api/movies` - Add new movie
   - Body: `{ title, description, genre[], rating, posterUrl, duration }`
 
@@ -142,6 +144,7 @@ src/
 ## Known Torrent Sites (For Reference)
 
 These are commonly used torrent sources:
+
 - The Pirate Bay: https://thepiratebay.org
 - 1337x: https://1337x.to
 - Kickass Torrents: https://kickass.to
@@ -151,11 +154,11 @@ These are commonly used torrent sources:
 
 ## Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/moviestime` |
-| `TORRENT_API_URL` | Torrent API endpoint | `https://api.thepiratebay.org` |
-| `PUBLIC_URL` | Public application URL | `http://localhost:3000` |
+| Variable          | Description               | Example                                |
+| ----------------- | ------------------------- | -------------------------------------- |
+| `MONGODB_URI`     | MongoDB connection string | `mongodb://localhost:27017/moviestime` |
+| `TORRENT_API_URL` | Torrent API endpoint      | `https://api.thepiratebay.org`         |
+| `PUBLIC_URL`      | Public application URL    | `http://localhost:3000`                |
 
 ## Building for Production
 
@@ -167,17 +170,20 @@ npm start
 ## Troubleshooting
 
 ### MongoDB Connection Issues
+
 - Ensure MongoDB is running: `mongod`
 - Check connection string in `.env.local`
 - Verify network access if using MongoDB Atlas
 
 ### Torrent Loading Issues
+
 - Check your internet connection
 - Ensure the magnet link is valid
 - WebTorrent may take time to fetch metadata
 - Check browser console for detailed errors
 
 ### Port Already in Use
+
 ```bash
 # Change port
 npm run dev -- -p 3001

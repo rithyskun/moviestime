@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 interface MovieDetail {
   _id: string;
@@ -32,7 +32,7 @@ export default function MoviePage() {
         if (data.success) {
           setMovie(data.data);
         } else {
-          setError('Movie not found');
+          setError("Movie not found");
         }
       } catch (err: any) {
         setError(err.message);
@@ -57,7 +57,7 @@ export default function MoviePage() {
   if (error || !movie) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-6">
-        <p className="text-red-500">{error || 'Movie not found'}</p>
+        <p className="text-red-500">{error || "Movie not found"}</p>
         <Link href="/" className="text-red-600 hover:text-red-500">
           Back to Home
         </Link>
@@ -70,10 +70,15 @@ export default function MoviePage() {
       {/* Header */}
       <header className="bg-gradient-to-b from-gray-900 to-transparent border-b border-gray-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-6 flex items-center gap-4">
-          <Link href="/" className="text-gray-400 hover:text-white transition-colors">
+          <Link
+            href="/"
+            className="text-gray-400 hover:text-white transition-colors"
+          >
             ← Back
           </Link>
-          <h1 className="text-2xl font-bold text-white truncate">{movie.title}</h1>
+          <h1 className="text-2xl font-bold text-white truncate">
+            {movie.title}
+          </h1>
         </div>
       </header>
 
@@ -100,7 +105,9 @@ export default function MoviePage() {
           {/* Details */}
           <div className="lg:col-span-3 space-y-6">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">{movie.title}</h1>
+              <h1 className="text-4xl font-bold text-white mb-2">
+                {movie.title}
+              </h1>
               <div className="flex items-center gap-4 flex-wrap">
                 {movie.rating && (
                   <div className="flex items-center gap-2">
@@ -122,10 +129,15 @@ export default function MoviePage() {
 
             {movie.genre && movie.genre.length > 0 && (
               <div>
-                <h2 className="text-gray-400 text-sm font-semibold mb-3">GENRES</h2>
+                <h2 className="text-gray-400 text-sm font-semibold mb-3">
+                  GENRES
+                </h2>
                 <div className="flex gap-2 flex-wrap">
                   {movie.genre.map((g) => (
-                    <span key={g} className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg">
+                    <span
+                      key={g}
+                      className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg"
+                    >
                       {g}
                     </span>
                   ))}
@@ -135,8 +147,12 @@ export default function MoviePage() {
 
             {movie.description && (
               <div>
-                <h2 className="text-gray-400 text-sm font-semibold mb-3">SYNOPSIS</h2>
-                <p className="text-gray-300 leading-relaxed">{movie.description}</p>
+                <h2 className="text-gray-400 text-sm font-semibold mb-3">
+                  SYNOPSIS
+                </h2>
+                <p className="text-gray-300 leading-relaxed">
+                  {movie.description}
+                </p>
               </div>
             )}
 

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import TorrentPlayer from '@/components/TorrentPlayer';
-import Link from 'next/link';
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import TorrentPlayer from "@/components/TorrentPlayer";
+import Link from "next/link";
 
 interface TorrentDetail {
   _id: string;
@@ -28,12 +28,14 @@ export default function TorrentPage() {
   useEffect(() => {
     const fetchTorrent = async () => {
       try {
-        const response = await fetch(`/api/torrents?hash=${encodeURIComponent(hash)}`);
+        const response = await fetch(
+          `/api/torrents?hash=${encodeURIComponent(hash)}`,
+        );
         const data = await response.json();
         if (data.success && data.data.length > 0) {
           setTorrent(data.data[0]);
         } else {
-          setError('Torrent not found');
+          setError("Torrent not found");
         }
       } catch (err: any) {
         setError(err.message);
@@ -58,7 +60,7 @@ export default function TorrentPage() {
   if (error || !torrent) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-6">
-        <p className="text-red-500">{error || 'Torrent not found'}</p>
+        <p className="text-red-500">{error || "Torrent not found"}</p>
         <Link href="/" className="text-red-600 hover:text-red-500">
           Back to Home
         </Link>
@@ -70,10 +72,15 @@ export default function TorrentPage() {
     <main className="min-h-screen bg-black">
       <header className="bg-gradient-to-b from-gray-900 to-transparent border-b border-gray-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-6 flex items-center gap-4">
-          <Link href="/" className="text-gray-400 hover:text-white transition-colors">
+          <Link
+            href="/"
+            className="text-gray-400 hover:text-white transition-colors"
+          >
             ← Back
           </Link>
-          <h1 className="text-2xl font-bold text-white truncate">{torrent.name}</h1>
+          <h1 className="text-2xl font-bold text-white truncate">
+            {torrent.name}
+          </h1>
         </div>
       </header>
 
@@ -81,7 +88,10 @@ export default function TorrentPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Player */}
           <div className="lg:col-span-2">
-            <TorrentPlayer magnetLink={torrent.magnetLink} fileName={torrent.name} />
+            <TorrentPlayer
+              magnetLink={torrent.magnetLink}
+              fileName={torrent.name}
+            />
           </div>
 
           {/* Details */}
@@ -111,11 +121,15 @@ export default function TorrentPage() {
                   <p className="text-gray-400 text-sm mb-2">Seeds & Peers</p>
                   <div className="flex gap-4">
                     <div>
-                      <p className="text-green-400 font-bold text-lg">{torrent.seeders}</p>
+                      <p className="text-green-400 font-bold text-lg">
+                        {torrent.seeders}
+                      </p>
                       <p className="text-gray-500 text-xs">Seeders</p>
                     </div>
                     <div>
-                      <p className="text-orange-400 font-bold text-lg">{torrent.leechers}</p>
+                      <p className="text-orange-400 font-bold text-lg">
+                        {torrent.leechers}
+                      </p>
                       <p className="text-gray-500 text-xs">Leechers</p>
                     </div>
                   </div>
@@ -123,7 +137,7 @@ export default function TorrentPage() {
 
                 <div className="pt-4 border-t border-gray-700">
                   <a
-                    href={`magnet:?${torrent.magnetLink.split('?')[1] || torrent.magnetLink}`}
+                    href={`magnet:?${torrent.magnetLink.split("?")[1] || torrent.magnetLink}`}
                     className="block w-full text-center bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors"
                   >
                     Open in Torrent Client
@@ -149,7 +163,9 @@ export default function TorrentPage() {
             {/* Hash Info */}
             <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
               <h3 className="text-white font-bold text-sm mb-3">Hash</h3>
-              <p className="text-gray-400 text-xs break-all font-mono">{torrent.hash}</p>
+              <p className="text-gray-400 text-xs break-all font-mono">
+                {torrent.hash}
+              </p>
             </div>
           </aside>
         </div>

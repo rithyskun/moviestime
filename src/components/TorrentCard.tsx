@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 interface TorrentCardProps {
   id: string;
@@ -29,7 +29,9 @@ export default function TorrentCard({
   return (
     <Link href={`/torrent/${hash || id}`}>
       <div className="p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer border border-gray-700 hover:border-red-600">
-        <h3 className="text-white font-semibold text-lg truncate mb-2">{name}</h3>
+        <h3 className="text-white font-semibold text-lg truncate mb-2">
+          {name}
+        </h3>
 
         <div className="grid grid-cols-2 gap-4 mb-3 text-sm text-gray-400">
           <div>
