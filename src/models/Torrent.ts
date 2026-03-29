@@ -10,6 +10,7 @@ export interface ITorrent extends Document {
   uploadedDate: Date;
   category: string;
   url: string;
+  source: string;
 }
 
 const TorrentSchema = new Schema(
@@ -51,6 +52,11 @@ const TorrentSchema = new Schema(
     },
     url: {
       type: String,
+    },
+    source: {
+      type: String,
+      default: 'Manual',
+      index: true,
     },
   },
   {

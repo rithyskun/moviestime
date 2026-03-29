@@ -9,10 +9,11 @@ interface TorrentCardProps {
   seeders: number;
   leechers: number;
   size: string;
-  uploadedDate: string;
+  uploadedDate?: string;
   category: string;
   hash?: string;
   magnetLink?: string;
+  source?: string;
 }
 
 export default function TorrentCard({
@@ -25,6 +26,7 @@ export default function TorrentCard({
   category,
   hash,
   magnetLink,
+  source,
 }: TorrentCardProps) {
   return (
     <Link href={`/torrent/${hash || id}`}>
@@ -52,8 +54,15 @@ export default function TorrentCard({
           </div>
         </div>
 
+        {source && (
+          <p className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded inline-block mb-2">
+            From: {source}
+          </p>
+        )}
+
         <p className="text-xs text-gray-500">
-          Uploaded: {new Date(uploadedDate).toLocaleDateString()}
+          {uploadedDate &&
+            `Uploaded: ${new Date(uploadedDate).toLocaleDateString()}`}
         </p>
       </div>
     </Link>

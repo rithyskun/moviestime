@@ -6,15 +6,16 @@ import TorrentPlayer from "@/components/TorrentPlayer";
 import Link from "next/link";
 
 interface TorrentDetail {
-  _id: string;
+  _id?: string;
   name: string;
   hash: string;
   magnetLink: string;
   seeders: number;
   leechers: number;
   size: string;
-  uploadedDate: string;
+  uploadedDate?: string;
   category: string;
+  source?: string;
   url?: string;
 }
 
@@ -28,17 +29,58 @@ export default function TorrentPage() {
   useEffect(() => {
     const fetchTorrent = async () => {
       try {
-        const response = await fetch(
-          `/api/torrents?hash=${encodeURIComponent(hash)}`,
+        // Extract actual hash if full magnet link was passed
+        let searchHash = hash;
+        if (hash.startsWith("magnet:")) {
+          const hashMatch = hash.match(/xt=urn:btih:([a-f0-9]+)/i);
+          if (hashMatch) {
+            searchHash = hashMatch[1];
+          }
+        }
+
+        // Try database first
+        const dbResponse = await fetch(
+          `/api/torrents?q=${encodeURIComponent(searchHash)}`,
         );
-        const data = await response.json();
-        if (data.success && data.data.length > 0) {
-          setTorrent(data.data[0]);
+        const dbData = await dbResponse.json();
+
+        if (dbData.success && dbData.data?.length > 0) {
+          setTorrent(dbData.data[0]);
+          setIsLoading(false);
+          return;
+        }
+
+        // If not in database, search live sources via server API
+        const liveResponse = await fetch(
+          `/api/torrents/live?q=${encodeURIComponent(searchHash)}`,
+        );
+        const liveData = await liveResponse.json();
+
+        if (liveData.success && liveData.data?.length > 0) {
+          const found = liveData.data.find(
+            (t: any) => t.hash.toLowerCase() === searchHash.toLowerCase(),
+          );
+
+          if (found) {
+            setTorrent({
+              name: found.name,
+              hash: found.hash,
+              magnetLink: found.magnetLink,
+              seeders: found.seeders,
+              leechers: found.leechers,
+              size: found.size,
+              category: found.category,
+              source: found.source,
+              url: found.url,
+            });
+          } else {
+            setError("Torrent not found in any source");
+          }
         } else {
           setError("Torrent not found");
         }
       } catch (err: any) {
-        setError(err.message);
+        setError(err.message || "Failed to load torrent");
       } finally {
         setIsLoading(false);
       }

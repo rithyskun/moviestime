@@ -1,20 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SearchBar from "@/components/SearchBar";
 import TorrentCard from "@/components/TorrentCard";
 import MovieCard from "@/components/MovieCard";
+import TorrentSourceFilter from "@/components/TorrentSourceFilter";
 
 interface Torrent {
-  _id: string;
+  _id?: string;
   name: string;
   seeders: number;
   leechers: number;
   size: string;
-  uploadedDate: string;
+  uploadedDate?: string;
   category: string;
   hash: string;
   magnetLink: string;
+  source: string;
 }
 
 interface Movie {
@@ -34,17 +36,47 @@ export default function Home() {
   const [searchType, setSearchType] = useState<"torrents" | "movies">(
     "torrents",
   );
+  const [selectedSources, setSelectedSources] = useState<string[]>([
+    "thepiratebay",
+    "1337x",
+    "kickass",
+    "rarbg",
+  ]);
+  const [searchSource, setSearchSource] = useState<"cached" | "live" | null>(
+    null,
+  );
+  const [initialQuery, setInitialQuery] = useState("");
 
-  const handleSearch = async (query: string) => {
+  // Restore last search on page load
+  useEffect(() => {
+    const saved = localStorage.getItem("searchHistory");
+    if (saved) {
+      try {
+        const history = JSON.parse(saved) as string[];
+        if (history.length > 0) {
+          setInitialQuery(history[0]);
+          // Auto-search with the last query
+          performSearch(history[0]);
+        }
+      } catch {
+        // Ignore errors
+      }
+    }
+  }, []);
+
+  const performSearch = async (query: string) => {
     setIsLoading(true);
     try {
       if (searchType === "torrents") {
+        const sourcesParam =
+          selectedSources.length > 0 ? selectedSources.join(",") : "";
         const response = await fetch(
-          `/api/torrents?q=${encodeURIComponent(query)}`,
+          `/api/torrents?q=${encodeURIComponent(query)}&sources=${sourcesParam}`,
         );
         const data = await response.json();
         if (data.success) {
           setTorrents(data.data);
+          setSearchSource(data.source || "live");
         }
       } else {
         const response = await fetch(
@@ -53,6 +85,7 @@ export default function Home() {
         const data = await response.json();
         if (data.success) {
           setMovies(data.data);
+          setSearchSource(null);
         }
       }
     } catch (error) {
@@ -60,6 +93,10 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSearch = async (query: string) => {
+    performSearch(query);
   };
 
   return (
@@ -105,7 +142,23 @@ export default function Home() {
         <SearchBar
           onSearch={handleSearch}
           placeholder={`Search ${searchType}...`}
+          initialQuery={initialQuery}
         />
+        {searchType === "torrents" && (
+          <div className="max-w-7xl mx-auto px-6 mt-6">
+            <TorrentSourceFilter
+              selectedSources={selectedSources}
+              onSourceChange={setSelectedSources}
+            />
+            {searchSource && (
+              <p className="text-xs text-gray-500 text-center">
+                Results from{" "}
+                {searchSource === "cached" ? "cache" : "live sources"} •{" "}
+                {searchSource === "live" && "Last updated now"}
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -124,10 +177,10 @@ export default function Home() {
 
             {torrents.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {torrents.map((torrent) => (
+                {torrents.map((torrent, idx) => (
                   <TorrentCard
-                    key={torrent._id}
-                    id={torrent._id}
+                    key={torrent._id || `${torrent.hash}-${idx}`}
+                    id={torrent._id || torrent.hash}
                     name={torrent.name}
                     seeders={torrent.seeders}
                     leechers={torrent.leechers}
@@ -136,6 +189,7 @@ export default function Home() {
                     category={torrent.category}
                     hash={torrent.hash}
                     magnetLink={torrent.magnetLink}
+                    source={torrent.source}
                   />
                 ))}
               </div>
