@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -16,6 +17,7 @@ export default function SearchBar({
   placeholder = "Search movies and torrents...",
   initialQuery = "",
 }: SearchBarProps) {
+  const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
   const [history, setHistory] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -49,14 +51,33 @@ export default function SearchBar({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      saveToHistory(query);
-      onSearch(query);
+      const trimmedQuery = query.trim();
+
+      // Check if query is a magnet link
+      if (trimmedQuery.toLowerCase().startsWith("magnet:")) {
+        // Redirect to magnet page instead of searching
+        router.push(`/magnet?link=${encodeURIComponent(trimmedQuery)}`);
+        setShowHistory(false);
+        return;
+      }
+
+      // Regular search
+      saveToHistory(trimmedQuery);
+      onSearch(trimmedQuery);
       setShowHistory(false);
     }
   };
 
   const handleHistorySelect = (selectedQuery: string) => {
     setQuery(selectedQuery);
+
+    // Check if it's a magnet link
+    if (selectedQuery.toLowerCase().startsWith("magnet:")) {
+      router.push(`/magnet?link=${encodeURIComponent(selectedQuery)}`);
+      setShowHistory(false);
+      return;
+    }
+
     saveToHistory(selectedQuery);
     onSearch(selectedQuery);
     setShowHistory(false);
@@ -81,6 +102,7 @@ export default function SearchBar({
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setShowHistory(true)}
             placeholder={placeholder}
+            title="Search movies, torrents, or paste a magnet link"
             className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-400 border border-gray-700 focus:border-red-600 focus:outline-none"
           />
           {/* Search History Dropdown */}

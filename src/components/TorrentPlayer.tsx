@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 
 interface TorrentPlayerProps {
   magnetLink: string;
@@ -11,112 +11,146 @@ export default function TorrentPlayer({
   magnetLink,
   fileName,
 }: TorrentPlayerProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [torrentInfo, setTorrentInfo] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const loadTorrent = async () => {
-    setIsLoading(true);
-    setError(null);
+  const copyToClipboard = async () => {
     try {
-      const response = await fetch("/api/stream/load", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ magnetLink }),
-      });
-
-      if (!response.ok) throw new Error("Failed to load torrent");
-
-      const data = await response.json();
-      if (data.success) {
-        setTorrentInfo(data.data);
-      } else {
-        setError(data.error);
-      }
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
+      await navigator.clipboard.writeText(magnetLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      alert("Failed to copy magnet link");
     }
   };
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6 bg-gray-900 rounded-lg">
       <div className="mb-6">
-        <h2 className="text-white text-2xl font-bold mb-4">Torrent Player</h2>
+        <h2 className="text-white text-2xl font-bold mb-4">How to Stream</h2>
 
-        <div className="mb-4 p-4 bg-gray-800 rounded">
-          <p className="text-gray-300 text-sm break-all">
-            Magnet: {magnetLink}
-          </p>
-        </div>
+        <div className="space-y-4">
+          {/* Method 1: Torrent Client */}
+          <div className="border border-green-700 bg-green-950 rounded-lg p-4">
+            <h3 className="text-green-400 font-bold mb-2">
+              ✅ Method 1: Use a Torrent Client (Recommended)
+            </h3>
+            <p className="text-gray-300 text-sm mb-3">
+              Open this magnet link in your favorite torrent client:
+            </p>
+            <button
+              onClick={() => {
+                window.location.href = magnetLink;
+              }}
+              className="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors mb-3"
+            >
+              🔗 Open in Torrent Client
+            </button>
+            <p className="text-gray-400 text-xs">
+              Popular clients: <strong>qBittorrent</strong>,{" "}
+              <strong>Transmission</strong>, <strong>Deluge</strong>,{" "}
+              <strong>rTorrent</strong>
+            </p>
+          </div>
 
-        <button
-          onClick={loadTorrent}
-          disabled={isLoading}
-          className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold disabled:opacity-50"
-        >
-          {isLoading ? "Loading..." : "Load Torrent"}
-        </button>
-
-        {error && <p className="text-red-500 mt-4">{error}</p>}
-      </div>
-
-      {torrentInfo && (
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <h3 className="text-white text-xl font-bold mb-4">
-            {torrentInfo.name}
-          </h3>
-
-          <div className="grid grid-cols-2 gap-4 mb-6 text-gray-300 text-sm">
-            <div>
-              <p className="text-gray-400">Hash:</p>
-              <p className="break-all">{torrentInfo.infoHash}</p>
+          {/* Method 2: Manual Copy */}
+          <div className="border border-blue-700 bg-blue-950 rounded-lg p-4">
+            <h3 className="text-blue-400 font-bold mb-2">
+              📋 Method 2: Copy Magnet Link
+            </h3>
+            <p className="text-gray-300 text-sm mb-3">
+              Copy the magnet link and paste it in your torrent client:
+            </p>
+            <div className="bg-gray-800 p-3 rounded mb-3 max-h-20 overflow-y-auto">
+              <p className="text-gray-300 text-xs break-all font-mono">
+                {magnetLink}
+              </p>
             </div>
-            <div>
-              <p className="text-gray-400">Progress:</p>
-              <p>{(torrentInfo.progress * 100).toFixed(2)}%</p>
-            </div>
-            <div>
-              <p className="text-gray-400">Downloaded:</p>
-              <p>{(torrentInfo.downloaded / 1024 / 1024).toFixed(2)} MB</p>
-            </div>
-            <div>
-              <p className="text-gray-400">Files:</p>
-              <p>{torrentInfo.files?.length || 0}</p>
+            <button
+              onClick={copyToClipboard}
+              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors text-sm"
+            >
+              {copied ? "✓ Copied!" : "📋 Copy Magnet Link"}
+            </button>
+          </div>
+
+          {/* Method 3: Stream Online */}
+          <div className="border border-purple-700 bg-purple-950 rounded-lg p-4">
+            <h3 className="text-purple-400 font-bold mb-2">
+              🌐 Method 3: Stream Online (No Download)
+            </h3>
+            <p className="text-gray-300 text-sm mb-3">
+              Use an online torrent streaming service:
+            </p>
+            <div className="space-y-2">
+              <a
+                href={`https://torrentsafe.com/?magnetLink=${encodeURIComponent(
+                  magnetLink,
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-center font-semibold transition-colors text-sm"
+              >
+                Stream with TorrentSafe
+              </a>
+              <a
+                href={`https://www.torrentmovies.net/?magnet=${encodeURIComponent(
+                  magnetLink,
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-center font-semibold transition-colors text-sm"
+              >
+                Stream with MovieBox
+              </a>
             </div>
           </div>
 
-          {torrentInfo.files && torrentInfo.files.length > 0 && (
-            <div>
-              <h4 className="text-white font-semibold mb-3">Files</h4>
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {torrentInfo.files.map((file: any) => (
-                  <div
-                    key={file.index}
-                    className="p-3 bg-gray-700 rounded hover:bg-gray-600 cursor-pointer"
-                  >
-                    <p className="text-gray-300 text-sm break-all">
-                      {file.name}
-                    </p>
-                    <p className="text-gray-400 text-xs">
-                      {(file.length / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Getting Started */}
+          <div className="border border-yellow-700 bg-yellow-950 rounded-lg p-4">
+            <h3 className="text-yellow-400 font-bold mb-2">
+              🚀 Getting Started (First Time?)
+            </h3>
+            <ol className="text-gray-300 text-sm space-y-2 list-decimal list-inside">
+              <li>
+                Download a torrent client (e.g., <strong>qBittorrent</strong> -
+                it&apos;s free and open source)
+              </li>
+              <li>Click &quot;Open in Torrent Client&quot; button above</li>
+              <li>
+                The torrent will start downloading to your Downloads folder
+              </li>
+              <li>Open the video file in your favorite video player</li>
+            </ol>
+          </div>
         </div>
-      )}
+      </div>
 
-      <div className="mt-6 p-4 bg-gray-800 rounded">
+      {/* Magnet Link Display */}
+      <div className="mt-8 p-4 bg-gray-800 rounded">
+        <h3 className="text-white font-bold text-sm mb-2">Torrent Info</h3>
+        <div className="space-y-2 text-sm">
+          <div>
+            <p className="text-gray-400">Name</p>
+            <p className="text-gray-200 break-words">{fileName || "Torrent"}</p>
+          </div>
+          <div>
+            <p className="text-gray-400">Magnet Link</p>
+            <div className="bg-gray-700 p-2 rounded text-xs text-gray-300 break-all">
+              {magnetLink}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Video Player (for future use if streaming service is added) */}
+      <div className="mt-6 p-4 bg-gray-800 rounded hidden">
         <video
           ref={videoRef}
           controls
           className="w-full bg-black rounded"
           controlsList="nodownload"
+          style={{ maxHeight: "600px" }}
         >
           Your browser does not support the video tag.
         </video>

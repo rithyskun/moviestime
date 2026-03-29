@@ -64,6 +64,13 @@ export default function Home() {
     }
   }, []);
 
+  /**
+   * Check if hash is valid (40 character hex string)
+   */
+  const isValidHash = (hash: string): boolean => {
+    return /^[a-f0-9]{40}$/i.test(hash);
+  };
+
   const performSearch = async (query: string) => {
     setIsLoading(true);
     try {
@@ -75,7 +82,11 @@ export default function Home() {
         );
         const data = await response.json();
         if (data.success) {
-          setTorrents(data.data);
+          // Filter out torrents with invalid hashes
+          const validTorrents = data.data.filter((t: Torrent) =>
+            isValidHash(t.hash),
+          );
+          setTorrents(validTorrents);
           setSearchSource(data.source || "live");
         }
       } else {

@@ -2,6 +2,8 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import VideoPlayer from "@/components/VideoPlayer";
+import StreamingPlayer from "@/components/StreamingPlayer";
 import TorrentPlayer from "@/components/TorrentPlayer";
 import Link from "next/link";
 
@@ -128,12 +130,38 @@ export default function TorrentPage() {
 
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Player */}
-          <div className="lg:col-span-2">
-            <TorrentPlayer
-              magnetLink={torrent.magnetLink}
-              fileName={torrent.name}
-            />
+          {/* Players */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Video Player - Main */}
+            <div>
+              <h2 className="text-xl font-bold text-white mb-4">
+                🎬 Watch Now
+              </h2>
+              <VideoPlayer magnetLink={torrent.magnetLink} />
+            </div>
+
+            {/* Alternative Streaming Methods */}
+            <div>
+              <h2 className="text-xl font-bold text-white mb-4">
+                📺 Other Streaming Options
+              </h2>
+              <StreamingPlayer
+                hash={torrent.hash}
+                name={torrent.name}
+                magnetLink={torrent.magnetLink}
+              />
+            </div>
+
+            {/* Download Methods */}
+            <div>
+              <h2 className="text-xl font-bold text-white mb-4">
+                ⬇️ Download Instead
+              </h2>
+              <TorrentPlayer
+                magnetLink={torrent.magnetLink}
+                fileName={torrent.name}
+              />
+            </div>
           </div>
 
           {/* Details */}
